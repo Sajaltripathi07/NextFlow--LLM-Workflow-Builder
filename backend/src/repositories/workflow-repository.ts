@@ -97,15 +97,15 @@ export async function appendRun(workflowId: string, run: WorkflowRunRecord): Pro
       completedAt: run.completedAt ? new Date(run.completedAt) : null,
       durationMs: run.durationMs,
       selectedNodeIds: run.selectedNodeIds,
-      summary: (run.summary ?? {}) as object,
+      summary: (run.summary ?? {}) as unknown as Prisma.InputJsonValue,
       nodeRuns: {
         create: run.nodeRuns.map((nr) => ({
           id: nr.id,
           nodeId: nr.nodeId,
           nodeType: nr.nodeType,
           status: nr.status,
-          inputs: (nr.inputs ?? {}) as object,
-          outputs: (nr.outputs ?? {}) as object,
+          inputs: (nr.inputs ?? {}) as unknown as Prisma.InputJsonValue,
+          outputs: (nr.outputs ?? {}) as unknown as Prisma.InputJsonValue,
           startedAt: new Date(nr.startedAt),
           completedAt: nr.completedAt ? new Date(nr.completedAt) : null,
           durationMs: nr.durationMs,
