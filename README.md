@@ -1,58 +1,109 @@
-markdown# NextFlow — LLM Workflow Builder
+# NextFlow — LLM Workflow Builder
 
-A pixel-perfect visual LLM workflow builder inspired by Krea.ai's Node Editor, built with Next.js, React Flow, and Google Gemini.
+> A pixel-perfect visual LLM workflow builder inspired by [Krea.ai](https://krea.ai)'s Node Editor — built with Next.js 15, React Flow, and Google Gemini.
 
----
-
-## Project Structure
-nextflow/
-├── backend/    # Fastify REST API — TypeScript, Prisma, Gemini, Trigger.dev
-└── frontend/   # Next.js 15 — React Flow, Zustand, Tailwind CSS
+![NextFlow Builder](https://images.unsplash.com/photo-1677442135703-1787eea5ce01?auto=format&fit=crop&w=1200&q=80)
 
 ---
 
-## Quick Start
+## ✨ Features
+
+- 🎨 **Pixel-perfect UI** — dark theme matching Krea.ai's design language
+- 🔀 **Visual DAG canvas** — drag, drop, connect nodes with React Flow
+- 🤖 **Gemini AI** — real LLM execution with multimodal support
+- ⚡ **Trigger.dev** — async task execution with retries
+- 🗄️ **PostgreSQL** — persistent workflow history via Prisma + Neon
+- 🔄 **Parallel execution** — independent branches run concurrently
+- ↩️ **Undo / Redo** — full canvas history
+- 📦 **Zero config** — runs in demo mode without any API keys
+
+---
+
+## 🚀 Quick Start
 
 ### Backend
-
 ```bash
 cd backend
 npm install
 cp .env.example .env
-# Add your GEMINI_API_KEY and DATABASE_URL to .env
 npm run dev
+# Running on http://localhost:3001
 ```
 
-Runs on `http://localhost:3001`
-
 ### Frontend
-
 ```bash
 cd frontend
 npm install
 cp .env.example .env
-# Add NEXT_PUBLIC_API_URL=http://localhost:3001
 npm run dev
+# Running on http://localhost:3000
 ```
 
-Runs on `http://localhost:3000`
-
-> **No API keys required** — runs in demo mode out of the box.
+> No API keys needed — app runs in demo mode out of the box.
 
 ---
 
-## Environment Variables
+## 🧩 Node Types
+
+| Node | Description | Input | Output |
+|---|---|---|---|
+| **Text** | Prompt or content input | — | `text` |
+| **Upload Image** | Image URL with live preview | — | `image` |
+| **Upload Video** | Video URL with player preview | — | `video` |
+| **Run Any LLM** | Gemini execution, multimodal | `system_prompt` `user_message` `images` | `text` |
+| **Crop Image** | x / y / width / height % | `image` | `image` |
+| **Extract Frame** | Timestamp in seconds | `video` | `image` |
+
+---
+
+## 🗺️ Sample Workflow
+Branch A (Image)              Branch B (Video)
+─────────────────             ─────────────────
+Upload Image                  Upload Video
+↓                             ↓
+Crop Image                    Extract Frame
+↓          ↘                  ↓
+LLM Description   ──→    Final Marketing Post LLM
+
+
+---
+
+## 🏗️ Project Structure
+nextflow/
+├── backend/                  # Fastify REST API
+│   ├── src/
+│   │   ├── domain/           # DAG execution, graph, types, schema
+│   │   ├── lib/              # Env config, Prisma client
+│   │   ├── repositories/     # DB or in-memory storage
+│   │   ├── routes/           # HTTP endpoints
+│   │   ├── services/         # Orchestration layer
+│   │   └── trigger/          # Trigger.dev tasks
+│   ├── prisma/               # Database schema
+│   └── trigger.config.ts     # Trigger.dev config
+│
+└── frontend/                 # Next.js 15 App
+└── src/
+├── app/              # Layout, pages, global CSS
+├── components/
+│   └── builder/      # Canvas, nodes, sidebar, history
+├── lib/              # API client, workflow graph utils
+├── stores/           # Zustand state
+└── types/            # TypeScript types
+
+---
+
+## ⚙️ Environment Variables
 
 ### `backend/.env`
 
 ```env
 PORT=3001
 FRONTEND_URL=http://localhost:3000
-DATABASE_URL=             # Neon PostgreSQL — falls back to in-memory if empty
-GEMINI_API_KEY=           # Google AI Studio — falls back to demo mode if empty
-TRIGGER_SECRET_KEY=       # Trigger.dev — optional
-TRANSLOADIT_KEY=          # Transloadit — optional
-TRANSLOADIT_SECRET=       # Transloadit — optional
+DATABASE_URL=            # Neon PostgreSQL — in-memory fallback if empty
+GEMINI_API_KEY=          # Google AI Studio — demo mode if empty
+TRIGGER_SECRET_KEY=      # Trigger.dev — optional
+TRANSLOADIT_KEY=         # Transloadit — optional
+TRANSLOADIT_SECRET=      # Transloadit — optional
 ```
 
 ### `frontend/.env`
@@ -63,63 +114,51 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 
 ---
 
-## Getting API Keys
+## 🔑 API Keys
 
-| Service | URL 
+| Service | Link | Free Tier |
 |---|---|---|
-| Google Gemini | https://aistudio.google.com 
-| Neon (PostgreSQL) | https://neon.tech |
-| Trigger.dev | https://trigger.dev 
-| Transloadit | https://transloadit.com | 
+| Google Gemini | [aistudio.google.com](https://aistudio.google.com) | ✅ |
+| Neon PostgreSQL | [neon.tech](https://neon.tech) | ✅ |
+| Trigger.dev | [trigger.dev](https://trigger.dev) | ✅ |
+| Transloadit | [transloadit.com](https://transloadit.com) | ✅ trial |
 
 ---
 
-## Node Types
+## 🚢 Deployment
 
-| Node | Input | Output |
-|---|---|---|
-| Text Node | Manual textarea | `text` |
-| Upload Image | Image URL | `image` |
-| Upload Video | Video URL | `video` |
-| Run Any LLM | `system_prompt`, `user_message`, `images` | `text` |
-| Crop Image | `image`, x/y/w/h % | `image` |
-| Extract Frame | `video`, timestamp (s) | `image` |
+### Backend → Render
+Root Directory:  backend
+Build Command:   npm install && npx prisma generate && npm run build
+Start Command:   node dist/index.js
 
----
+Add in Render dashboard:
+```env
+NODE_ENV=production
+DATABASE_URL=...
+GEMINI_API_KEY=...
+FRONTEND_URL=https://your-app.vercel.app
+```
 
-## Features
+### Frontend → Vercel
+Root Directory: frontend
 
-- React Flow canvas with dot-grid, pan, zoom, MiniMap
-- Drag-and-drop nodes from sidebar
-- Type-safe connections — prevents invalid node pairings
-- DAG validation — no cycles allowed
-- Animated edges with directional arrows
-- Undo / Redo (`Ctrl+Z` / `Ctrl+Y`)
-- Delete nodes (`Delete` / `Backspace`)
-- Run All / Run Selected nodes
-- Parallel execution of independent branches
-- LLM output displayed inline on node
-- Workflow run history with node-level breakdown
-- Save / load workflows
-- In-memory fallback when no database configured
+Add in Vercel dashboard:
+```env
+NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
+```
 
 ---
 
-## Sample Workflow (Pre-loaded)
-Branch A                    Branch B
-────────────────            ────────────────
-Upload Image                Upload Video
-↓                           ↓
-Crop Image                  Extract Frame
-↓         ↘                 ↓
-LLM Description  ──→   Final Marketing Post LLM
+## 🛠️ Tech Stack
 
----
-
-## Deployment
-
-| Service | Purpose | URL |
-|---|---|---|
-| Vercel | Frontend | vercel.com |
-| Render | Backend | render.com |
-| Neon | PostgreSQL | neon.tech |
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 15, React Flow, Zustand, Tailwind CSS |
+| Backend | Fastify 5, TypeScript, Zod |
+| Database | PostgreSQL, Prisma, Neon |
+| LLM | Google Gemini (`@google/genai`) |
+| Task Queue | Trigger.dev |
+| File Processing | Transloadit |
+| Icons | Lucide React |
+| Notifications | Sonner |
