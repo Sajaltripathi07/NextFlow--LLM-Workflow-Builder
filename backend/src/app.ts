@@ -10,8 +10,26 @@ export function buildApp() {
   const app = Fastify({ logger: { level: "info" } });
 
   app.register(cors, {
-    origin: [env.FRONTEND_URL, "http://localhost:3000"],
-    credentials: true
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true);
+
+      const allowed = [
+        env.FRONTEND_URL,
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "https://localhost:3000"
+      ].filter(Boolean);
+
+      const isAllowed =
+        allowed.includes(origin) ||
+        origin.endsWith(".vercel.app") ||
+        origin.endsWith(".onrender.com");
+
+      cb(null, isAllowed ? true : new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-clerk-user-id"]
   });
 
   app.register(healthRoutes, { prefix: "/api" });
