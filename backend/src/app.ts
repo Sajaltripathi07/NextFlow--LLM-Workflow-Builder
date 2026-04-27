@@ -11,11 +11,16 @@ export function buildApp() {
 
   app.register(cors, {
     origin: (origin, cb) => {
-      if (!origin) return cb(null, true);
+      if (!origin) {
+        cb(null, true);
+        return;
+      }
 
       const allowed = [
         env.FRONTEND_URL,
         "http://localhost:3000",
+        "http://localhost:3001",
+        "https://localhost:3000"
       ].filter(Boolean);
 
       const isAllowed =
@@ -23,7 +28,11 @@ export function buildApp() {
         origin.endsWith(".vercel.app") ||
         origin.endsWith(".onrender.com");
 
-      cb(null, isAllowed ? true : new Error("Not allowed by CORS"));
+      if (isAllowed) {
+        cb(null, true);
+      } else {
+        cb(new Error("Not allowed by CORS"), false);
+      }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
