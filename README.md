@@ -70,6 +70,7 @@ npm run dev
 ---
 
 ## 🗺️ Sample Workflow
+```
 Branch A (Image)              Branch B (Video)
 ─────────────────             ─────────────────
 Upload Image                  Upload Video
@@ -77,14 +78,7 @@ Upload Image                  Upload Video
 Crop Image                    Extract Frame
 ↓          ↘                  ↓
 LLM Description   ──→    Final Marketing Post LLM
-
-
----
-
-
----
-
-## ⚙️ Environment Variables
+```
 
 ---
 
