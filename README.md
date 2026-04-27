@@ -19,13 +19,27 @@
 
 ---
 
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 15, React Flow, Zustand, Tailwind CSS |
+| Backend | Fastify 5, TypeScript, Zod |
+| Database | PostgreSQL, Prisma, Neon |
+| LLM | Google Gemini (`@google/genai`) |
+| Task Queue | Trigger.dev |
+| File Processing | Transloadit |
+| Icons | Lucide React |
+| Notifications | Sonner |
+
+
 ## 🚀 Quick Start
 
 ### Backend
 ```bash
 cd backend
 npm install
-cp .env.example .env
 npm run dev
 # Running on http://localhost:3001
 ```
@@ -34,7 +48,6 @@ npm run dev
 ```bash
 cd frontend
 npm install
-cp .env.example .env
 npm run dev
 # Running on http://localhost:3000
 ```
@@ -125,40 +138,6 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 
 ---
 
-## 🚢 Deployment
-
-### Backend → Render
-Root Directory:  backend
-Build Command:   npm install && npx prisma generate && npm run build
-Start Command:   node dist/index.js
-
-Add in Render dashboard:
-```env
-NODE_ENV=production
-DATABASE_URL=...
-GEMINI_API_KEY=...
-FRONTEND_URL=https://your-app.vercel.app
-```
-
-### Frontend → Vercel
-Root Directory: frontend
-
-Add in Vercel dashboard:
-```env
-NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
 ```
 
 ---
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | Next.js 15, React Flow, Zustand, Tailwind CSS |
-| Backend | Fastify 5, TypeScript, Zod |
-| Database | PostgreSQL, Prisma, Neon |
-| LLM | Google Gemini (`@google/genai`) |
-| Task Queue | Trigger.dev |
-| File Processing | Transloadit |
-| Icons | Lucide React |
-| Notifications | Sonner |
