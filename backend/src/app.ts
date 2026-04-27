@@ -16,8 +16,6 @@ export function buildApp() {
       const allowed = [
         env.FRONTEND_URL,
         "http://localhost:3000",
-        "http://localhost:3001",
-        "https://localhost:3000"
       ].filter(Boolean);
 
       const isAllowed =
