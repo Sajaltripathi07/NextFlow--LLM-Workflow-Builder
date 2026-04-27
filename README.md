@@ -81,49 +81,10 @@ LLM Description   ──→    Final Marketing Post LLM
 
 ---
 
-## 🏗️ Project Structure
-nextflow/
-├── backend/                  # Fastify REST API
-│   ├── src/
-│   │   ├── domain/           # DAG execution, graph, types, schema
-│   │   ├── lib/              # Env config, Prisma client
-│   │   ├── repositories/     # DB or in-memory storage
-│   │   ├── routes/           # HTTP endpoints
-│   │   ├── services/         # Orchestration layer
-│   │   └── trigger/          # Trigger.dev tasks
-│   ├── prisma/               # Database schema
-│   └── trigger.config.ts     # Trigger.dev config
-│
-└── frontend/                 # Next.js 15 App
-└── src/
-├── app/              # Layout, pages, global CSS
-├── components/
-│   └── builder/      # Canvas, nodes, sidebar, history
-├── lib/              # API client, workflow graph utils
-├── stores/           # Zustand state
-└── types/            # TypeScript types
 
 ---
 
 ## ⚙️ Environment Variables
-
-### `backend/.env`
-
-```env
-PORT=3001
-FRONTEND_URL=http://localhost:3000
-DATABASE_URL=            # Neon PostgreSQL — in-memory fallback if empty
-GEMINI_API_KEY=          # Google AI Studio — demo mode if empty
-TRIGGER_SECRET_KEY=      # Trigger.dev — optional
-TRANSLOADIT_KEY=         # Transloadit — optional
-TRANSLOADIT_SECRET=      # Transloadit — optional
-```
-
-### `frontend/.env`
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3001
-```
 
 ---
 
