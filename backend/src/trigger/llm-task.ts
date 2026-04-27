@@ -87,14 +87,19 @@ export async function runLlm(payload: LlmTaskPayload): Promise<LlmTaskResult> {
     ]
       .filter(Boolean)
       .join("\n\n");
+
     return { nodeId: payload.nodeId, text: demoText };
   }
 
   const client = new GoogleGenAI({ apiKey });
   const resolvedModel = resolveModel(payload.model);
-  const textPrompt = [payload.systemPrompt, payload.userMessage].filter(Boolean).join("\n\n");
+
+  const textPrompt = [payload.systemPrompt, payload.userMessage]
+    .filter(Boolean)
+    .join("\n\n");
 
   const parts: Record<string, unknown>[] = [{ text: textPrompt }];
+
   for (const uri of payload.images) {
     if (uri.startsWith("http")) {
       parts.push({ fileData: { fileUri: uri } });
@@ -108,8 +113,32 @@ export async function runLlm(payload: LlmTaskPayload): Promise<LlmTaskResult> {
     ...FALLBACK_CHAIN.filter((m) => m !== resolvedModel)
   ];
 
-  const text = await generateWithFallback(client, modelsToTry, contents);
-  return { nodeId: payload.nodeId, text };
+  try {
+    const text = await generateWithFallback(client, modelsToTry, contents);
+    return { nodeId: payload.nodeId, text };
+  } catch (err: any) {
+    const msg = err?.message || "";
+
+    if (
+      msg.includes("quota") ||
+      msg.includes("429") ||
+      msg.includes("API key") ||
+      msg.includes("not found")
+    ) {
+      return {
+        nodeId: payload.nodeId,
+        text:
+          " LLM quota/API limit reached. Showing demo output.\n\n" +
+          payload.userMessage.slice(0, 200)
+      };
+    }
+
+    // 🔹 fallback generic error
+    return {
+      nodeId: payload.nodeId,
+      text: " LLM failed. Please try again."
+    };
+  }
 }
 
 export const llmTask = task({
