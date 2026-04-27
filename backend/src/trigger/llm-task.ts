@@ -4,18 +4,16 @@ import { GoogleGenAI } from "@google/genai";
 import type { LlmTaskPayload, LlmTaskResult } from "./task-types.js";
 
 const MODEL_MAP: Record<string, string> = {
-  "gemini-2.5-flash": "gemini-2.5-flash-preview-04-17",
-  "gemini-2.5-pro": "gemini-2.5-pro-preview-03-25",
+  "gemini-2.5-flash": "gemini-2.0-flash",
+  "gemini-2.5-pro": "gemini-2.0-flash",
   "gemini-2.0-flash": "gemini-2.0-flash",
-  "gemini-1.5-pro": "gemini-1.5-pro-latest",
-  "gemini-1.5-flash": "gemini-1.5-flash-latest"
+  "gemini-1.5-pro": "gemini-1.5-flash",
+  "gemini-1.5-flash": "gemini-1.5-flash"
 };
 
 const FALLBACK_CHAIN = [
-  "gemini-2.5-flash-preview-04-17",
-  "gemini-1.5-flash-latest",
-  "gemini-1.5-pro-latest",
-  "gemini-2.0-flash"
+  "gemini-2.0-flash",
+  "gemini-1.5-flash"
 ];
 
 function resolveModel(model: string): string {
