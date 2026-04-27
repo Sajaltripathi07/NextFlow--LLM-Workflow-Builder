@@ -52,11 +52,19 @@ export async function saveWorkflow(input: CreateWorkflowInput): Promise<Workflow
     memoryStore.set(workflow.id, workflow);
     return workflow;
   }
+
   const existing = await (prisma as PrismaClient).workflow.findFirst({
     where: { clerkUserId: input.clerkUserId, name: input.name },
     select: { id: true }
   });
-  const sharedData = { definition: input.definition, viewport: input.viewport ?? null };
+
+  const sharedData = {
+    definition: input.definition as unknown as Prisma.InputJsonValue,
+    viewport: input.viewport
+      ? (input.viewport as unknown as Prisma.InputJsonValue)
+      : Prisma.JsonNull
+  };
+
   const workflow = existing
     ? await (prisma as PrismaClient).workflow.update({
         where: { id: existing.id },
@@ -67,9 +75,9 @@ export async function saveWorkflow(input: CreateWorkflowInput): Promise<Workflow
         data: { clerkUserId: input.clerkUserId, name: input.name, ...sharedData },
         include: { runs: { include: { nodeRuns: true }, orderBy: { startedAt: "desc" } } }
       });
+
   return mapWorkflowRecord(workflow);
 }
-
 export async function appendRun(workflowId: string, run: WorkflowRunRecord): Promise<WorkflowRecord> {
   if (!prisma) {
     const workflow = memoryStore.get(workflowId);
