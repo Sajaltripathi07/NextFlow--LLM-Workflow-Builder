@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 import { prisma } from "../lib/prisma.js";
 import type { WorkflowRecord, WorkflowRunRecord } from "../domain/workflow-types.js";
